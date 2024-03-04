@@ -1,0 +1,50 @@
+.movie__card {
+    padding: 0px;
+    margin: 0px;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    width: 451px;
+    height: 279px;
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+
+    box-shadow: 0px 0px 2cap rgba(0, 0, 0, 0.15);
+}
+.card__image {
+width: 10%;
+    height: 10%;
+
+}
+
+.card__name {
+    padding: 0px;
+    margin-bottom: 0px;
+    margin-top: 10px;
+    line-height: 28px;
+    font-weight: 100;
+}
+
+.card__time {
+    color: #827E7E;
+
+}
+
+.cart__theme {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.card__info {
+    align-items: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+    
+.movie__info {
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 15px;
+    line-height: 22px;
+    text-align: left;    
+}
+
