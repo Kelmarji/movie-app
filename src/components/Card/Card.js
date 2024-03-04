@@ -5,10 +5,7 @@ export default function Card(props) {
   return (
     <li className="movie__card">
       <div className="card__image">
-        <img
-          className="cardImg"
-          // src=""
-        />
+        <img className="cardImg" src="https://image.tmdb.org/t/p/w185/oNRgfay17YoArHCikwakIPmQoep.jpg" />
       </div>
       <div className="card__info">
         <h1 className="card__name">{props.label}</h1>
