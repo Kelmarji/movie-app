@@ -1,21 +1,27 @@
-import React, { ReactDOM } from 'react';
+import React from 'react';
 
 import './MovieList.css';
 import Card from '../Card';
 
-const myvis = [
-  { name: 'hehe1' },
-  { name: 'hehe2' },
-  { name: 'hehe3' },
-  { name: 'hehe4' },
-  { name: 'hehe5' },
-  { name: 'hehe6' },
-];
-
-const films = myvis.map(({ name }) => {
-  return <Card label={name} />;
-});
-console.log(films);
-export const MovieList = () => {
-  return <ul className="movie__list">{films}</ul>;
+const MovieList = ({ filmsList }) => {
+  const filteredFilms = filmsList.filter((el) => {
+    return el.id && el.title && el.genres && el.overview && el.release_date && el.poster_path;
+  });
+  const filmArr = filteredFilms.map((item) => (
+    <Card
+      key={item.id}
+      label={item.title}
+      genres={item.genres}
+      desc={item.overview}
+      date={item.release_date}
+      poster={item.poster_path}
+    />
+  ));
+  return (
+    <ul key="uniqueKey" className="movie__list">
+      {filmArr}
+    </ul>
+  );
 };
+
+export default MovieList;

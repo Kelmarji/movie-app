@@ -3,3 +3,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 2vw;
 }
+
+@media (max-width: 768px) {
+    .movie__list {
+      grid-template-columns: 1fr;
+      gap: 1vw;
+    }
+  }
