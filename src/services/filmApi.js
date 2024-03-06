@@ -18,9 +18,12 @@ async function filmsFromId(id) {
   }
 }
 
-export default async function filmArray(page) {
+export default async function filmArray(page, text = 'return') {
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/changes?page=${page}`, options);
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?query=${text}&include_adult=false&language=en-US&page=${page}`,
+      options
+    );
     const data = await response.json();
     const filmPromises = data.results.map(({ id }) => {
       return filmsFromId(id);
@@ -32,6 +35,8 @@ export default async function filmArray(page) {
     throw err;
   }
 }
+
+// `https://api.themoviedb.org/3/search/movie?include_adult=true&language=en-US&page=${page}` poisk
 //  async function filmsArrFetch(page = 1) {
 //   try {
 //     const response = await fetch(`https://api.themoviedb.org/3/movie/changes?page=${page}`, options);
