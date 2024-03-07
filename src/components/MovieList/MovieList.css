@@ -1,7 +1,6 @@
 .movie__list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2vw;
+  padding: 0;
+  /* display: grid; */
 }
 
 @media (max-width: 768px) {
