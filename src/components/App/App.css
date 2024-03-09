@@ -1,4 +1,20 @@
 .App {
-  margin: 50px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 50px;
   background-color: white;
+}
+
+.margined {
+  padding: 0px 200px;
+}
+
+.ant-pagination-item-link {
+  background-image: none !important;
+}
+
+.input-size {
+  width: 938px;
 }

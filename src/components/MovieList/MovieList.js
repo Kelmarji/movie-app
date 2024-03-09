@@ -1,6 +1,6 @@
 import React from 'react';
 import './MovieList.css';
-import * as a from 'antd';
+// import * as a from 'antd';
 
 import Card from '../Card';
 
@@ -22,9 +22,7 @@ const MovieList = ({ filmsList }) => {
   ));
   return (
     <ul key="uniqueKey" className="movie__list">
-      <a.Flex gap="large" justify="space-around" flex align="flex-start" wrap="wrap">
-        {filmArr}
-      </a.Flex>
+      {filmArr}
     </ul>
   );
 };

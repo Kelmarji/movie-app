@@ -13,8 +13,7 @@ async function filmsFromId(id) {
     const film = await filmOnId.json();
     return film;
   } catch (err) {
-    console.error(err);
-    throw err;
+    throw new Error(err);
   }
 }
 
@@ -31,55 +30,6 @@ export default async function filmArray(page, text = 'return') {
     const films = await Promise.all(filmPromises);
     return films;
   } catch (err) {
-    console.error(err);
-    throw err;
+    throw new Error(err);
   }
 }
-
-// `https://api.themoviedb.org/3/search/movie?include_adult=true&language=en-US&page=${page}` poisk
-//  async function filmsArrFetch(page = 1) {
-//   try {
-//     const response = await fetch(`https://api.themoviedb.org/3/movie/changes?page=${page}`, options);
-//     const data = await response.json();
-//     return data;
-//   } catch (err) {
-//     console.error(err);
-//     throw err;
-//   }
-// }
-
-// async function filmsFromId(id) {
-//   try {
-//     const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options);
-//     const film = await response.json();
-//     return film;
-//   } catch (err) {
-//     console.error(err);
-//     throw err;
-//   }
-// }
-
-// export async function filmsArr() {
-//   await fetch('https://api.themoviedb.org/3/movie/changes?page=2', options)
-//     .then((response) => response.json())
-//     .then((response) => console.log(response))
-//     .catch((err) => console.error(err));
-// }
-
-// fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options)
-//   .then((response) => response.json())
-//   .then((response) => console.log(response))
-//   .catch((err) => console.error(err));
-
-// //  poster https://image.tmdb.org/t/p/w185/${movie.poster_path}/oNRgfay17YoArHCikwakIPmQoep.jpg
-
-// export async function filmsFromId(IdArr) {
-//   IdArr.map((item) => {
-//     fetch(`https://api.themoviedb.org/3/movie/${item.id}?language=en-US`, options)
-//       .then((response) => response.json())
-//       .then((response) => console.log(response))
-//       .catch((err) => console.error(err));
-//   });
-// }
-
-// export default filmApi;
