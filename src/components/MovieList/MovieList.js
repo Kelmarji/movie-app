@@ -1,6 +1,5 @@
 import React from 'react';
 import './MovieList.css';
-// import * as a from 'antd';
 
 import Card from '../Card';
 

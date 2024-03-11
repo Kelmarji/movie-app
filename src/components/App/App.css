@@ -18,3 +18,23 @@
 .input-size {
   width: 938px;
 }
+
+.loading__card {
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  padding-right: 5px;
+  margin: 0px;
+  font-family:Inter UI;
+  display: flex;
+}
+
+.unloaded__movie__list {
+    display: flex !important;
+    width: 100vw;
+    height: 80vh;
+    justify-content: space-around;
+    padding: 0;
+    align-items: center;
+    display: flex;
+}
