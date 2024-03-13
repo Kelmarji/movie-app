@@ -28,6 +28,7 @@ export default class FilmApiService {
       `https://api.themoviedb.org/3/search/movie?query=${text}&include_adult=false&language=en-US&page=${page}`,
       this.options
     );
+    if (!response.ok) return 'ERROR';
     const data = await response.json();
     const filmPromises = data.results.map(({ id }) => {
       return this.filmFromId(id);
@@ -45,4 +46,6 @@ export default class FilmApiService {
     const films = await response.json();
     return films;
   }
+
+  // test connection
 }
