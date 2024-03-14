@@ -1,120 +1,116 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import { Online, Offline } from 'react-detect-offline';
 import * as antd from 'antd';
+import _ from 'lodash';
 
 import FilmApiService from '../../services/filmApi-service';
 import './App.css';
 import MovieList from '../MovieList';
+import Header from '../Header';
 
 const filmApi = new FilmApiService();
 
-export const App = () => {
-  const [films, setFilms] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const [page, setPage] = useState(501);
-  const [conLost, setConLost] = useState(false);
-  const [errTxt, setErrTxt] = useState('Error');
-
-  const Alert = () => {
-    return <antd.Alert message="Error" description={`Ops,${errTxt}`} type="error" showIcon />;
+export default class App extends Component {
+  state = {
+    films: [],
+    loaded: false,
+    page: 1,
+    searchText: 'return',
+    conLost: false,
+    errTxt: 'erroredishe',
+    pages: 1,
   };
-  const Loading = () => {
+
+  Loading = () => {
     return (
       <ul key="uniqueKey" className="movie__list unloaded__movie__list">
-        <div className="loading__card">{conLost ? <Alert className="error" /> : <antd.Spin size="large" />}</div>
+        <div className="loading__card">
+          {this.state.conLost ? <this.Alert className="error" /> : <antd.Spin size="large" />}
+        </div>
       </ul>
     );
   };
 
-  const getFilms = async () => {
+  Alert = () => {
+    return <antd.Alert message="Error" description={`Ops,${this.state.errTxt}`} type="error" showIcon />;
+  };
+
+  getFilms = async (p = this.state.page, search = this.state.searchText) => {
+    await filmApi.getFilmsIdArray(p, search).then((count) => this.setState({ pages: count.total_results }));
     await filmApi
-      .getfilmArrayFromId(page, 'return')
+      .getfilmArrayFromId(p, search)
       .then((body) => {
+        const films = body;
         if (body === 'ERROR') {
-          setLoaded(false);
+          this.setState({ loaded: false });
           throw new Error('something Wrong');
         }
-        setFilms(body);
-        setConLost(false);
-        setLoaded(true);
+        this.setState({ films, conLost: false, loaded: true });
       })
       .catch((err) => {
-        setErrTxt(err.message);
-        setConLost(true);
+        this.setState({ errTxt: err.message, conLost: true });
       });
   };
 
-  useEffect(() => {
-    getFilms();
-  }, []);
-
-  const changePage = (num) => {
-    setPage(num);
-    setLoaded(false);
-    getFilms();
+  changePage = (num = 1) => {
+    console.log(num);
+    this.setState({ page: num });
+    this.getFilms(num);
+    this.setState({ loaded: false });
   };
 
-  const items = [
-    {
-      key: '1',
-      label: 'Search',
-    },
-    {
-      key: '2',
-      label: 'Rated',
-    },
-  ];
+  changeSearch = (text = 'test') => {
+    _.debounce(() => {
+      this.setState({ searchText: text });
+      this.getFilms(this.state.page, text);
+      this.setState({ loaded: false });
+    }, 2000)();
+  };
 
-  return (
-    <div>
-      <Online>
-        <div className="App">
-          <antd.ConfigProvider
-            theme={{
-              components: {
-                Tabs: {
-                  itemHoverColor: 'yellow',
-                  itemActiveColor: 'yellow',
-                  inkBarColor: 'yellow',
-                  itemSelectedColor: 'black',
-                  colorBorderSecondary: 'white',
-                  /* here is your component tokens */
-                },
-              },
-            }}
-          >
-            <antd.Tabs defaultActiveKey="1" items={items} />
-          </antd.ConfigProvider>
-          <antd.Input placeholder="type to search..." className="input-size" size={'Large'} />
-          {loaded ? <MovieList filmsList={films} /> : <Loading />}
-          <antd.Pagination total={50} onChange={(e) => changePage(e)} />
-        </div>
-      </Online>
-      <Offline className="offline">
-        <div className="App">
-          <antd.ConfigProvider
-            theme={{
-              components: {
-                Tabs: {
-                  itemHoverColor: 'yellow',
-                  itemActiveColor: 'yellow',
-                  inkBarColor: 'yellow',
-                  itemSelectedColor: 'black',
-                  colorBorderSecondary: 'white',
-                  /* here is your component tokens */
-                },
-              },
-            }}
-          >
-            <antd.Tabs defaultActiveKey="1" items={items} />
-          </antd.ConfigProvider>
-          <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
-          <antd.Pagination total={50} onChange={(e) => changePage(e)} />
-        </div>
-      </Offline>
-    </div>
-  );
-};
+  componentDidMount() {
+    this.getFilms();
+  }
 
-export default App;
+  render() {
+    const { films, loaded, pages } = this.state;
+    if (!films.length) {
+      return (
+        <div>
+          <Online>
+            <div className="App">
+              <Header change={this.changeSearch} />
+              <antd.Alert type="warning" message="Ops" description="Sorry, we can't find this films" />
+              <antd.Pagination total={1} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />;
+            </div>
+          </Online>
+          <Offline className="offline">
+            <div className="App">
+              <Header />
+              <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
+              <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
+            </div>
+          </Offline>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <Online>
+          <div className="App">
+            <Header change={this.changeSearch} />
+            {loaded ? <MovieList filmsList={films} /> : <this.Loading />}
+            <antd.Pagination total={pages} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />
+            ;
+          </div>
+        </Online>
+        <Offline className="offline">
+          <div className="App">
+            <Header />
+            <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
+            <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
+          </div>
+        </Offline>
+      </div>
+    );
+  }
+}

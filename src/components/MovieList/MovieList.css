@@ -2,9 +2,11 @@
   width: 938px;
   align-self: center;
   padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
