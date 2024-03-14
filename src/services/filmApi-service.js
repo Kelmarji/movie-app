@@ -34,7 +34,6 @@ export default class FilmApiService {
       return this.filmFromId(id);
     });
     const films = await Promise.all(filmPromises);
-    console.log(films);
     return films;
   }
 
@@ -45,7 +44,6 @@ export default class FilmApiService {
       this.options
     );
     const films = await response.json();
-    console.log(films);
     return films;
   }
 

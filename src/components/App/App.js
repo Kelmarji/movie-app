@@ -53,7 +53,6 @@ export default class App extends Component {
   };
 
   changePage = (num = 1) => {
-    console.log(num);
     this.setState({ page: num });
     this.getFilms(num);
     this.setState({ loaded: false });
