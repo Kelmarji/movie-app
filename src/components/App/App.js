@@ -36,7 +36,12 @@ export default class App extends Component {
   };
 
   getFilms = async (p = this.state.page, search = this.state.searchText) => {
-    await filmApi.getFilmsIdArray(p, search).then((count) => this.setState({ pages: count.total_results }));
+    await filmApi
+      .getFilmsIdArray(p, search)
+      .then((count) => this.setState({ pages: count.total_results }))
+      .catch((err) => {
+        this.setState({ errTxt: err.me, conLost: true });
+      });
     await filmApi
       .getfilmArrayFromId(p, search)
       .then((body) => {
@@ -67,12 +72,12 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    this.getFilms();
+    this.getFilms(1, 'return');
   }
 
   render() {
-    const { films, loaded, pages } = this.state;
-    if (!films.length) {
+    const { films, loaded, pages, conLost } = this.state;
+    if (!films.length && !conLost) {
       return (
         <div>
           <Online>
