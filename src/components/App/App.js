@@ -63,13 +63,11 @@ export default class App extends Component {
     this.setState({ loaded: false });
   };
 
-  changeSearch = (text = 'test') => {
-    _.debounce(() => {
-      this.setState({ searchText: text });
-      this.getFilms(this.state.page, text);
-      this.setState({ loaded: false });
-    }, 2000)();
-  };
+  changeSearch = _.debounce((text = 'return') => {
+    this.setState({ searchText: text });
+    this.getFilms(this.state.page, text);
+    this.setState({ loaded: false });
+  }, 2000);
 
   componentDidMount() {
     this.getFilms(1, 'return');
