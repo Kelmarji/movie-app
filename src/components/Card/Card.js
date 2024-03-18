@@ -17,7 +17,7 @@ const descLength = (text) => `${text.split(' ').slice(0, 30).join(' ')} ${'...'}
 const Card = (props) => {
   const { label, genres, desc, date, id, poster } = props;
   return (
-    <li key={id} className="movie__card">
+    <li key={id} id={id} className="movie__card">
       <div className="card__image">
         <img className="cardImg" src={`https://image.tmdb.org/t/p/w185${poster}`} />
       </div>

@@ -10,6 +10,31 @@ export default class FilmApiService {
 
   apiBase = 'https://api.themoviedb.org/3';
 
+  // genres for Context
+  async getGenres(id) {
+    const res = await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en', this.options);
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${id}, received ${res.status}`);
+    }
+
+    const genres = await res.json();
+    return genres;
+  }
+
+  // rated films
+  async getRatedFilms(id) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/guest_session/${id}/rated/movies?language=en-US&page=1&sort_by=created_at.asc`,
+      this.options
+    );
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${id}, received ${res.status}`);
+    }
+
+    const films = await res.json();
+    return films;
+  }
+
   async guestSession() {
     const guesId = await fetch('https://api.themoviedb.org/3/authentication/guest_session/new', this.options);
 
