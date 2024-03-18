@@ -10,6 +10,13 @@ export default class FilmApiService {
 
   apiBase = 'https://api.themoviedb.org/3';
 
+  async guestSession() {
+    const guesId = await fetch('https://api.themoviedb.org/3/authentication/guest_session/new', this.options);
+
+    const id = await guesId.json();
+    return id;
+  }
+
   // 1 film from ID
   async filmFromId(id) {
     const res = await fetch(`${this.apiBase}/movie/${id}?language=en-US`, this.options);

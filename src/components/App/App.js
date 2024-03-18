@@ -13,6 +13,8 @@ const filmApi = new FilmApiService();
 export default class App extends Component {
   state = {
     films: [],
+    ratedFilms: [],
+    sessionId: '',
     loaded: false,
     page: 1,
     searchText: 'return',
@@ -55,6 +57,14 @@ export default class App extends Component {
       .catch((err) => {
         this.setState({ errTxt: err.message, conLost: true });
       });
+
+    if (!this.state.sessionId) {
+      await filmApi.guestSession().then((body) => {
+        this.setState({ sessionId: body.guest_session_id });
+      });
+    } else {
+      console.log(`You session id: ${this.state.sessionId}`);
+    }
   };
 
   changePage = (num = 1) => {
@@ -64,6 +74,7 @@ export default class App extends Component {
   };
 
   changeSearch = _.debounce((text = 'return') => {
+    this.setState({ page: 1 });
     this.setState({ searchText: text });
     this.getFilms(this.state.page, text);
     this.setState({ loaded: false });
@@ -71,6 +82,10 @@ export default class App extends Component {
 
   componentDidMount() {
     this.getFilms(1, 'return');
+  }
+
+  componentDidCatch(err) {
+    this.setState({ errTxt: err.me, conLost: true });
   }
 
   render() {
