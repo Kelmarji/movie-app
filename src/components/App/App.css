@@ -47,3 +47,9 @@
 .Footer {
   margin-bottom: 1vh;
 }
+
+.Header {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+}
