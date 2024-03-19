@@ -3,10 +3,9 @@ import './MovieList.css';
 
 import Card from '../Card';
 
-const MovieList = ({ filmsList, tab }) => {
-  console.log(tab, filmsList);
+const MovieList = ({ filmsList }) => {
   const filteredFilms = filmsList.filter((el) => {
-    return el.id && el.title && el.genres && el.overview && el.release_date && el.poster_path;
+    return el.id && el.title && el.genres.length > 0 && el.overview && el.release_date && el.poster_path;
   });
   // .slice(0, 6);
   const filmArr = filteredFilms.map((item) => (

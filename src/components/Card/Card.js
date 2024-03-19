@@ -2,15 +2,7 @@ import React from 'react';
 import './Card.css';
 import { format } from 'date-fns';
 
-const genresArr = (arr = [{ id: 1, name: 'Ohae' }]) => {
-  return arr.map(({ id = 0, name = 'err' }) => {
-    return (
-      <li key={id} className="marked">
-        {name}
-      </li>
-    );
-  });
-};
+import { MovieAppConsumer } from '../MovieAppContextService/MovieAppContextService';
 
 const descLength = (text) => `${text.split(' ').slice(0, 30).join(' ')} ${'...'}`;
 
@@ -24,7 +16,22 @@ const Card = (props) => {
       <div className="card__info">
         <h1 className="card__name">{label}</h1>
         <span className="card__time">{`${format(new Date(date), 'MMMM dd, yyyy')}`}</span>
-        <ul className="card__theme">{genresArr(genres)}</ul>
+        <ul className="card__theme">
+          {genres.map((item) => {
+            return (
+              <MovieAppConsumer key={item.id}>
+                {(genr) => {
+                  const genreName = genr.find((genre) => genre.id === item.id);
+                  return (
+                    <li key={item.id} className="marked">
+                      <span>{genreName ? genreName.name : ''}</span>
+                    </li>
+                  );
+                }}
+              </MovieAppConsumer>
+            );
+          })}
+        </ul>
         <span className="movie__info">{descLength(desc)}</span>
       </div>
     </li>

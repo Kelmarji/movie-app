@@ -3,10 +3,10 @@ import { Online, Offline } from 'react-detect-offline';
 import * as antd from 'antd';
 import _ from 'lodash';
 
+import { MovieAppProvider } from '../MovieAppContextService/MovieAppContextService';
 import FilmApiService from '../../services/filmApi-service';
 import './App.css';
 import MovieList from '../MovieList';
-import { MovieAppProvider } from '../MovieAppContextService';
 
 const filmApi = new FilmApiService();
 
@@ -22,6 +22,7 @@ export default class App extends Component {
     conLost: false,
     errTxt: 'erroredishe',
     pages: 1,
+    genres: [],
   };
 
   items = [
@@ -50,7 +51,6 @@ export default class App extends Component {
   };
 
   getFilms = async (p = this.state.page, search = this.state.searchText) => {
-    console.log(this.state.sessionId); //  del when commit
     await filmApi
       .getFilmsIdArray(p, search)
       .then((count) => this.setState({ pages: count.total_results }))
@@ -81,7 +81,6 @@ export default class App extends Component {
       .getRatedFilms('0959599ec631455f4858556b58c95a2d')
       .then(async (body) => {
         const ratedFilms = body.results;
-        console.log(ratedFilms);
         if (body === 'ERROR') {
           this.setState({ loaded: false });
           throw new Error('something Wrong');
@@ -107,9 +106,15 @@ export default class App extends Component {
     this.setState({ loaded: false });
   }, 2000);
 
+  getGenres = async () => {
+    const { genres } = await filmApi.getGenres();
+    this.setState({ genres });
+  };
+
   changeTab = (str) => (str === 'Search' ? this.setState({ tab: 'Search' }) : this.setState({ tab: 'Rated' }));
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.getGenres();
     this.getFilms(1, 'return');
   }
 
@@ -121,137 +126,66 @@ export default class App extends Component {
     const { films, loaded, pages, conLost, tab, ratedFilms } = this.state;
     if (tab === 'Rated') {
       return (
-        <MovieAppProvider value={this.filmApi}>
-          <div>
-            <Online>
-              <div className="App">
-                <div className="Header">
-                  <antd.ConfigProvider
-                    theme={{
-                      components: {
-                        Tabs: {
-                          itemHoverColor: 'yellow',
-                          itemActiveColor: 'yellow',
-                          inkBarColor: 'yellow',
-                          itemSelectedColor: 'black',
-                          colorBorderSecondary: 'white',
-                          /* here is your component tokens */
-                        },
+        <div>
+          <Online>
+            <div className="App">
+              <div className="Header">
+                <antd.ConfigProvider
+                  theme={{
+                    components: {
+                      Tabs: {
+                        itemHoverColor: 'yellow',
+                        itemActiveColor: 'yellow',
+                        inkBarColor: 'yellow',
+                        itemSelectedColor: 'black',
+                        colorBorderSecondary: 'white',
+                        /* here is your component tokens */
                       },
-                    }}
-                  >
-                    <antd.Tabs defaultActiveKey="2" items={this.items} onChange={(e) => this.changeTab(e)} />
-                  </antd.ConfigProvider>
-                </div>
-                {loaded ? <MovieList filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
-                <antd.Pagination
-                  total={pages}
-                  pageSize={20}
-                  showSizeChanger={false}
-                  onChange={(e) => this.changePage(e)}
-                />
-                ;
+                    },
+                  }}
+                >
+                  <antd.Tabs defaultActiveKey="2" items={this.items} onChange={(e) => this.changeTab(e)} />
+                </antd.ConfigProvider>
               </div>
-            </Online>
-            <Offline className="offline">
-              <div className="App">
-                <div className="Header">
-                  <antd.ConfigProvider
-                    theme={{
-                      components: {
-                        Tabs: {
-                          itemHoverColor: 'yellow',
-                          itemActiveColor: 'yellow',
-                          inkBarColor: 'yellow',
-                          itemSelectedColor: 'black',
-                          colorBorderSecondary: 'white',
-                          /* here is your component tokens */
-                        },
+              {loaded ? <MovieList filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
+              <antd.Pagination
+                total={pages}
+                pageSize={20}
+                showSizeChanger={false}
+                onChange={(e) => this.changePage(e)}
+              />
+              ;
+            </div>
+          </Online>
+          <Offline className="offline">
+            <div className="App">
+              <div className="Header">
+                <antd.ConfigProvider
+                  theme={{
+                    components: {
+                      Tabs: {
+                        itemHoverColor: 'yellow',
+                        itemActiveColor: 'yellow',
+                        inkBarColor: 'yellow',
+                        itemSelectedColor: 'black',
+                        colorBorderSecondary: 'white',
+                        /* here is your component tokens */
                       },
-                    }}
-                  >
-                    <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
-                  </antd.ConfigProvider>
-                </div>
-                <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
-                <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
+                    },
+                  }}
+                >
+                  <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
+                </antd.ConfigProvider>
               </div>
-            </Offline>
-          </div>
-        </MovieAppProvider>
+              <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
+              <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
+            </div>
+          </Offline>
+        </div>
       );
     }
     if (!films.length && !conLost) {
       return (
-        <MovieAppProvider value={this.filmApi}>
-          <div>
-            <Online>
-              <div className="App">
-                <div className="Header">
-                  <antd.ConfigProvider
-                    theme={{
-                      components: {
-                        Tabs: {
-                          itemHoverColor: 'yellow',
-                          itemActiveColor: 'yellow',
-                          inkBarColor: 'yellow',
-                          itemSelectedColor: 'black',
-                          colorBorderSecondary: 'white',
-                          /* here is your component tokens */
-                        },
-                      },
-                    }}
-                  >
-                    <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
-                  </antd.ConfigProvider>
-                  <antd.Input
-                    placeholder="type to search..."
-                    className="input-size"
-                    onChange={(e) => this.changeSearch(e.target.value)}
-                    size={'Large'}
-                  />
-                </div>
-                <antd.Alert type="success" message={`Hello ${'guest'}`} description="input film name to search ;)" />
-                <antd.Pagination total={1} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />
-                ;
-              </div>
-            </Online>
-            <Offline className="offline">
-              <div className="App">
-                <div className="Header">
-                  <antd.ConfigProvider
-                    theme={{
-                      components: {
-                        Tabs: {
-                          itemHoverColor: 'yellow',
-                          itemActiveColor: 'yellow',
-                          inkBarColor: 'yellow',
-                          itemSelectedColor: 'black',
-                          colorBorderSecondary: 'white',
-                          /* here is your component tokens */
-                        },
-                      },
-                    }}
-                  >
-                    <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
-                  </antd.ConfigProvider>
-                  <antd.Input
-                    placeholder="type to search..."
-                    className="input-size"
-                    onChange={(e) => this.changeSearch(e.target.value)}
-                    size={'Large'}
-                  />
-                </div>
-                <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
-                <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
-              </div>
-            </Offline>
-          </div>
-        </MovieAppProvider>
-      );
-    }
-    return (
-      <MovieAppProvider value={this.filmApi}>
         <div>
           <Online>
             <div className="App">
@@ -279,14 +213,8 @@ export default class App extends Component {
                   size={'Large'}
                 />
               </div>
-              {loaded ? <MovieList filmsList={films} /> : <this.Loading />}
-              <antd.Pagination
-                total={pages}
-                pageSize={20}
-                showSizeChanger={false}
-                onChange={(e) => this.changePage(e)}
-              />
-              ;
+              <antd.Alert type="success" message={`Hello ${'guest'}`} description="input film name to search ;)" />
+              <antd.Pagination total={1} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />;
             </div>
           </Online>
           <Offline className="offline">
@@ -320,7 +248,74 @@ export default class App extends Component {
             </div>
           </Offline>
         </div>
-      </MovieAppProvider>
+      );
+    }
+    return (
+      <div>
+        <Online>
+          <div className="App">
+            <div className="Header">
+              <antd.ConfigProvider
+                theme={{
+                  components: {
+                    Tabs: {
+                      itemHoverColor: 'yellow',
+                      itemActiveColor: 'yellow',
+                      inkBarColor: 'yellow',
+                      itemSelectedColor: 'black',
+                      colorBorderSecondary: 'white',
+                      /* here is your component tokens */
+                    },
+                  },
+                }}
+              >
+                <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
+              </antd.ConfigProvider>
+              <antd.Input
+                placeholder="type to search..."
+                className="input-size"
+                onChange={(e) => this.changeSearch(e.target.value)}
+                size={'Large'}
+              />
+            </div>
+            <MovieAppProvider value={this.state.genres}>
+              {loaded ? <MovieList filmsList={films} /> : <this.Loading />}
+            </MovieAppProvider>
+            <antd.Pagination total={pages} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />
+            ;
+          </div>
+        </Online>
+        <Offline className="offline">
+          <div className="App">
+            <div className="Header">
+              <antd.ConfigProvider
+                theme={{
+                  components: {
+                    Tabs: {
+                      itemHoverColor: 'yellow',
+                      itemActiveColor: 'yellow',
+                      inkBarColor: 'yellow',
+                      itemSelectedColor: 'black',
+                      colorBorderSecondary: 'white',
+                      /* here is your component tokens */
+                    },
+                  },
+                }}
+              >
+                <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
+              </antd.ConfigProvider>
+              <antd.Input
+                placeholder="type to search..."
+                className="input-size"
+                onChange={(e) => this.changeSearch(e.target.value)}
+                size={'Large'}
+              />
+            </div>
+            <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
+            <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
+          </div>
+        </Offline>
+      </div>
     );
   }
 }

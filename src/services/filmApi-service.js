@@ -11,10 +11,10 @@ export default class FilmApiService {
   apiBase = 'https://api.themoviedb.org/3';
 
   // genres for Context
-  async getGenres(id) {
+  async getGenres() {
     const res = await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en', this.options);
     if (!res.ok) {
-      throw new Error(`Could not fetch ${id}, received ${res.status}`);
+      throw new Error('Could not fetch');
     }
 
     const genres = await res.json();
