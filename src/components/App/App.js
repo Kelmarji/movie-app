@@ -22,6 +22,7 @@ export default class App extends Component {
     conLost: false,
     errTxt: 'erroredishe',
     pages: 1,
+    ratedPages: 1,
     genres: [],
   };
 
@@ -80,6 +81,7 @@ export default class App extends Component {
     await filmApi
       .getRatedFilms('0959599ec631455f4858556b58c95a2d')
       .then(async (body) => {
+        this.setState({ ratedPages: body.total_results });
         const ratedFilms = body.results;
         if (body === 'ERROR') {
           this.setState({ loaded: false });
@@ -93,15 +95,14 @@ export default class App extends Component {
   };
 
   changePage = (num = 1) => {
-    console.log(this.state.tab);
     this.setState({ page: num });
     this.getFilms(num);
     this.setState({ loaded: false });
   };
 
-  changeSearch = _.debounce((text = 'return') => {
-    this.setState({ page: 1 });
+  changeSearch = _.debounce((text) => {
     this.setState({ searchText: text });
+    this.setState({ page: 1 });
     this.getFilms(this.state.page, text);
     this.setState({ loaded: false });
   }, 2000);
@@ -114,8 +115,9 @@ export default class App extends Component {
   changeTab = (str) => (str === 'Search' ? this.setState({ tab: 'Search' }) : this.setState({ tab: 'Rated' }));
 
   async componentDidMount() {
+    this.changeTab('Search');
     this.getGenres();
-    this.getFilms(1, 'return');
+    this.getFilms(this.state.page, this.state.search);
   }
 
   componentDidCatch(err) {
@@ -123,7 +125,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { films, loaded, pages, conLost, tab, ratedFilms } = this.state;
+    const { films, loaded, pages, conLost, tab, ratedFilms, ratedPages, page } = this.state;
     if (tab === 'Rated') {
       return (
         <div>
@@ -147,9 +149,12 @@ export default class App extends Component {
                   <antd.Tabs defaultActiveKey="2" items={this.items} onChange={(e) => this.changeTab(e)} />
                 </antd.ConfigProvider>
               </div>
-              {loaded ? <MovieList filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
+              <MovieAppProvider value={this.state.genres}>
+                {loaded ? <MovieList filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
+              </MovieAppProvider>
               <antd.Pagination
-                total={pages}
+                defaultActiveKey={1}
+                total={ratedPages}
                 pageSize={20}
                 showSizeChanger={false}
                 onChange={(e) => this.changePage(e)}
@@ -214,7 +219,14 @@ export default class App extends Component {
                 />
               </div>
               <antd.Alert type="success" message={`Hello ${'guest'}`} description="input film name to search ;)" />
-              <antd.Pagination total={1} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />;
+              <antd.Pagination
+                defaultActiveKey={page}
+                total={1}
+                pageSize={20}
+                showSizeChanger={false}
+                onChange={(e) => this.changePage(e)}
+              />
+              ;
             </div>
           </Online>
           <Offline className="offline">
@@ -244,7 +256,12 @@ export default class App extends Component {
                 />
               </div>
               <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
-              <antd.Pagination className="Footer" total={1} onChange={(e) => this.changePage(e)} />
+              <antd.Pagination
+                defaultActiveKey={page}
+                className="Footer"
+                total={1}
+                onChange={(e) => this.changePage(e)}
+              />
             </div>
           </Offline>
         </div>
@@ -279,9 +296,15 @@ export default class App extends Component {
               />
             </div>
             <MovieAppProvider value={this.state.genres}>
-              {loaded ? <MovieList filmsList={films} /> : <this.Loading />}
+              {loaded ? <MovieList filmsList={films} tab={tab} /> : <this.Loading />}
             </MovieAppProvider>
-            <antd.Pagination total={pages} pageSize={20} showSizeChanger={false} onChange={(e) => this.changePage(e)} />
+            <antd.Pagination
+              defaultActiveKey={this.state.page}
+              total={pages}
+              pageSize={20}
+              showSizeChanger={false}
+              onChange={(e) => this.changePage(e)}
+            />
             ;
           </div>
         </Online>
