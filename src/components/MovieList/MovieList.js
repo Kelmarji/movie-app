@@ -18,6 +18,7 @@ const MovieList = ({ filmsList, tab, ratingPost }) => {
 
   const filmArr = filteredFilms.map((item) => (
     <Card
+      rating={item.rating}
       ratingPost={ratingPost}
       id={item.id}
       key={item.id}

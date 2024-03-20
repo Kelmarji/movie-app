@@ -9,9 +9,15 @@ import { MovieAppConsumer } from '../MovieAppContextService/MovieAppContextServi
 const descLength = (text) => `${text.split(' ').slice(0, 30).join(' ')} ${'...'}`;
 
 const Card = (props) => {
-  const { label, genres, desc, date, id, poster, popularity, ratingPost } = props;
+  const { label, genres, desc, date, id, poster, popularity, ratingPost, rating } = props;
   const idsGenres = [];
   let genresToSpan = [];
+  const countStars = (rat) => {
+    if (rat > 0) {
+      return rat;
+    }
+    return 0;
+  };
   // eslint-disable-next-line no-nested-ternary
   const color = popularity > 70 ? '#66E900' : popularity > 50 ? '#E9D100' : popularity > 30 ? '#E97E00' : '#E90000';
 
@@ -58,14 +64,26 @@ const Card = (props) => {
           })}
         </ul>
         <span className="movie__info">{descLength(desc)}</span>
-        <a.Rate
-          id={id}
-          allowHalf
-          defaultValue={0}
-          onChange={(value) => {
-            console.log(value);
-          }}
-        />
+        {rating ? (
+          <a.Rate
+            value={countStars(rating)}
+            id={id}
+            allowHalf
+            defaultValue={0}
+            onChange={(value) => {
+              ratingPost(value, id);
+            }}
+          />
+        ) : (
+          <a.Rate
+            id={id}
+            allowHalf
+            defaultValue={0}
+            onChange={(value) => {
+              ratingPost(value, id);
+            }}
+          />
+        )}
       </div>
     </li>
   );

@@ -52,6 +52,12 @@ export default class App extends Component {
   };
 
   getFilms = async (p = this.state.page, search = this.state.searchText) => {
+    if (!this.state.sessionId) {
+      await filmApi.guestSession().then(async (body) => {
+        await this.setState({ sessionId: body.guest_session_id });
+      });
+    }
+
     await filmApi
       .getFilmsIdArray(p, search)
       .then((count) => this.setState({ pages: count.total_results }))
@@ -72,15 +78,10 @@ export default class App extends Component {
         this.setState({ errTxt: err.message, conLost: true });
       });
 
-    if (!this.state.sessionId) {
-      await filmApi.guestSession().then((body) => {
-        this.setState({ sessionId: body.guest_session_id });
-      });
-    }
-
     await filmApi
-      .getRatedFilms('0959599ec631455f4858556b58c95a2d')
-      .then(async (body) => {
+      .getRatedFilms(this.state.sessionId)
+      .then((body) => {
+        console.log(body);
         this.setState({ ratedPages: body.total_results });
         const ratedFilms = body.results;
         if (body === 'ERROR') {
@@ -114,16 +115,33 @@ export default class App extends Component {
     this.setState({ genres });
   };
 
-  changeTab = (str) => (str === 'Search' ? this.setState({ tab: 'Search' }) : this.setState({ tab: 'Rated' }));
+  changeTab = (str) => {
+    if (str === 'Search') {
+      this.setState({ tab: 'Search' });
+    } else {
+      this.setState({ tab: 'Rated' });
+    }
+  };
 
-  pageSetter = (num) => this.setState({ page: num });
-
-  rater = (value, filmId) => {
+  rater = async (value, filmId) => {
     filmApi.PostRating(value, filmId, this.state.sessionId);
+    await filmApi
+      .getRatedFilms(this.state.sessionId)
+      .then(async (body) => {
+        this.setState({ ratedPages: body.total_results });
+        const ratedFilms = body.results;
+        if (body === 'ERROR') {
+          this.setState({ loaded: false });
+          throw new Error('something Wrong');
+        }
+        this.setState({ ratedFilms, conLost: false, loaded: true });
+      })
+      .catch((err) => {
+        this.setState({ errTxt: err.message, conLost: true });
+      });
   };
 
   async componentDidMount() {
-    this.changeTab('Search');
     this.getGenres();
     this.getFilms(this.state.page, this.state.search);
   }
@@ -158,7 +176,7 @@ export default class App extends Component {
                 </antd.ConfigProvider>
               </div>
               <MovieAppProvider value={this.state.genres}>
-                {loaded ? <MovieList filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
+                {loaded ? <MovieList ratingPost={this.rater} filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
               </MovieAppProvider>
               <antd.Pagination
                 current={page}
@@ -234,7 +252,6 @@ export default class App extends Component {
               <antd.Pagination
                 current={page}
                 defaultActiveKey={page}
-                current={page}
                 total={1}
                 pageSize={20}
                 showSizeChanger={false}
@@ -317,7 +334,7 @@ export default class App extends Component {
               />
             </div>
             <MovieAppProvider value={this.state.genres}>
-              {loaded ? <MovieList filmsList={films} tab={tab} /> : <this.Loading />}
+              {loaded ? <MovieList ratingPost={this.rater} filmsList={films} tab={tab} /> : <this.Loading />}
             </MovieAppProvider>
             <antd.Pagination
               current={page}
