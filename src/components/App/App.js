@@ -114,6 +114,8 @@ export default class App extends Component {
 
   changeTab = (str) => (str === 'Search' ? this.setState({ tab: 'Search' }) : this.setState({ tab: 'Rated' }));
 
+  pageSetter = (num) => this.setState({ page: num });
+
   async componentDidMount() {
     this.changeTab('Search');
     this.getGenres();
@@ -153,6 +155,7 @@ export default class App extends Component {
                 {loaded ? <MovieList filmsList={ratedFilms} tab={tab} /> : <this.Loading />}
               </MovieAppProvider>
               <antd.Pagination
+                current={page}
                 defaultActiveKey={1}
                 total={ratedPages}
                 pageSize={20}
@@ -214,13 +217,17 @@ export default class App extends Component {
                 <antd.Input
                   placeholder="type to search..."
                   className="input-size"
-                  onChange={(e) => this.changeSearch(e.target.value)}
+                  onChange={(e) => {
+                    this.changeSearch(e.target.value);
+                    this.pageSetter(1);
+                  }}
                   size={'Large'}
                 />
               </div>
               <antd.Alert type="success" message={`Hello ${'guest'}`} description="input film name to search ;)" />
               <antd.Pagination
                 defaultActiveKey={page}
+                current={page}
                 total={1}
                 pageSize={20}
                 showSizeChanger={false}
@@ -251,12 +258,16 @@ export default class App extends Component {
                 <antd.Input
                   placeholder="type to search..."
                   className="input-size"
-                  onChange={(e) => this.changeSearch(e.target.value)}
+                  onChange={(e) => {
+                    this.changeSearch(e.target.value);
+                    this.pageSetter(1);
+                  }}
                   size={'Large'}
                 />
               </div>
               <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
               <antd.Pagination
+                current={page}
                 defaultActiveKey={page}
                 className="Footer"
                 total={1}
@@ -291,7 +302,10 @@ export default class App extends Component {
               <antd.Input
                 placeholder="type to search..."
                 className="input-size"
-                onChange={(e) => this.changeSearch(e.target.value)}
+                onChange={(e) => {
+                  this.changeSearch(e.target.value);
+                  this.pageSetter(1);
+                }}
                 size={'Large'}
               />
             </div>
@@ -299,6 +313,7 @@ export default class App extends Component {
               {loaded ? <MovieList filmsList={films} tab={tab} /> : <this.Loading />}
             </MovieAppProvider>
             <antd.Pagination
+              current={page}
               defaultActiveKey={this.state.page}
               total={pages}
               pageSize={20}
@@ -330,7 +345,10 @@ export default class App extends Component {
               <antd.Input
                 placeholder="type to search..."
                 className="input-size"
-                onChange={(e) => this.changeSearch(e.target.value)}
+                onChange={(e) => {
+                  this.changeSearch(e.target.value);
+                  this.pageSetter(1);
+                }}
                 size={'Large'}
               />
             </div>
