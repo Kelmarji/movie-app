@@ -116,6 +116,10 @@ export default class App extends Component {
 
   pageSetter = (num) => this.setState({ page: num });
 
+  rater = (value, filmId) => {
+    filmApi.PostRating(value, filmId, this.state.sessionId);
+  };
+
   async componentDidMount() {
     this.changeTab('Search');
     this.getGenres();

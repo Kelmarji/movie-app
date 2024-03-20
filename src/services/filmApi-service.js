@@ -10,7 +10,7 @@ export default class FilmApiService {
 
   //  заготовка PostRating
   // eslint-disable-next-line class-methods-use-this
-  async PostRating(value, filmId, sesId) {
+  async PostRating(value, filmId, sesId = '0959599ec631455f4858556b58c95a2d') {
     const postOptions = {
       method: 'POST',
       headers: {

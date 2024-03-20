@@ -3,7 +3,7 @@ import './MovieList.css';
 
 import Card from '../Card';
 
-const MovieList = ({ filmsList, tab }) => {
+const MovieList = ({ filmsList, tab, ratingPost }) => {
   const filteredFilms = filmsList.filter((el) => {
     return (
       el.id &&
@@ -11,12 +11,14 @@ const MovieList = ({ filmsList, tab }) => {
       (tab === 'Search' ? el.genres : el.genre_ids) &&
       el.overview &&
       el.release_date &&
-      el.poster_path
+      el.poster_path &&
+      el.popularity
     );
   });
 
   const filmArr = filteredFilms.map((item) => (
     <Card
+      ratingPost={ratingPost}
       id={item.id}
       key={item.id}
       label={item.title}
@@ -24,6 +26,7 @@ const MovieList = ({ filmsList, tab }) => {
       desc={item.overview}
       date={item.release_date}
       poster={item.poster_path}
+      popularity={item.popularity}
     />
   ));
   return (
