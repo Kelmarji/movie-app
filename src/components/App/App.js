@@ -116,6 +116,12 @@ export default class App extends Component {
 
   changeTab = (str) => (str === 'Search' ? this.setState({ tab: 'Search' }) : this.setState({ tab: 'Rated' }));
 
+  pageSetter = (num) => this.setState({ page: num });
+
+  rater = (value, filmId) => {
+    filmApi.PostRating(value, filmId, this.state.sessionId);
+  };
+
   async componentDidMount() {
     this.changeTab('Search');
     this.getGenres();
@@ -228,6 +234,7 @@ export default class App extends Component {
               <antd.Pagination
                 current={page}
                 defaultActiveKey={page}
+                current={page}
                 total={1}
                 pageSize={20}
                 showSizeChanger={false}

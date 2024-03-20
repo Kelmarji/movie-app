@@ -8,6 +8,26 @@ export default class FilmApiService {
     },
   };
 
+  //  заготовка PostRating
+  // eslint-disable-next-line class-methods-use-this
+  async PostRating(value, filmId, sesId = '0959599ec631455f4858556b58c95a2d') {
+    const postOptions = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYTk4YmNiZGM5NTY4ZDFjMmJlNDVmMGUxZmZiMDRhNyIsInN1YiI6IjY1ZTVkMGI3YTA1NWVmMDE2MzEyMDczZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7nvhnCAfqpCaeEsxc3Xfs3hJ42uWhnprRZK_VxeeAH4',
+      },
+      body: JSON.stringify({ value }),
+    };
+
+    fetch(`https://api.themoviedb.org/3/movie/${filmId}/rating?guest_session_id=${sesId}`, postOptions)
+      .then((response) => response.json())
+      .then((response) => console.log(response))
+      .catch((err) => console.error(err));
+  }
+
   apiBase = 'https://api.themoviedb.org/3';
 
   // genres for Context
