@@ -81,7 +81,6 @@ export default class App extends Component {
     await filmApi
       .getRatedFilms(this.state.sessionId)
       .then((body) => {
-        console.log(body);
         this.setState({ ratedPages: body.total_results });
         const ratedFilms = body.results;
         if (body === 'ERROR') {
@@ -115,30 +114,18 @@ export default class App extends Component {
     this.setState({ genres });
   };
 
-  changeTab = (str) => {
+  changeTab = async (str) => {
     if (str === 'Search') {
       this.setState({ tab: 'Search' });
     } else {
+      await filmApi.getRatedFilms(this.state.sessionId).then((body) => this.setState({ ratedFilms: body.results }));
       this.setState({ tab: 'Rated' });
     }
   };
 
   rater = async (value, filmId) => {
     filmApi.PostRating(value, filmId, this.state.sessionId);
-    await filmApi
-      .getRatedFilms(this.state.sessionId)
-      .then(async (body) => {
-        this.setState({ ratedPages: body.total_results });
-        const ratedFilms = body.results;
-        if (body === 'ERROR') {
-          this.setState({ loaded: false });
-          throw new Error('something Wrong');
-        }
-        this.setState({ ratedFilms, conLost: false, loaded: true });
-      })
-      .catch((err) => {
-        this.setState({ errTxt: err.message, conLost: true });
-      });
+    await filmApi.getRatedFilms(this.state.sessionId).then((body) => this.setState({ ratedFilms: body.results }));
   };
 
   async componentDidMount() {
