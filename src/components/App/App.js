@@ -10,6 +10,21 @@ import MovieList from '../MovieList';
 
 const filmApi = new FilmApiService();
 
+const mergeArrays = (arr1, arr2) => {
+  const mergedArray = [...arr1];
+
+  arr2.forEach((obj2) => {
+    const matchingIndex = mergedArray.findIndex((obj1) => obj1.id === obj2.id);
+    if (matchingIndex !== -1) {
+      mergedArray[matchingIndex] = { ...mergedArray[matchingIndex], ...obj2 };
+    } else {
+      mergedArray.push(obj2);
+    }
+  });
+
+  return mergedArray;
+};
+
 export default class App extends Component {
   state = {
     tab: 'Search',
@@ -92,6 +107,8 @@ export default class App extends Component {
       .catch((err) => {
         this.setState({ errTxt: err.message, conLost: true });
       });
+
+    this.setState({ films: mergeArrays(this.state.films, this.state.ratedFilms) });
   };
 
   changePage = (num = 1) => {
@@ -126,6 +143,7 @@ export default class App extends Component {
   rater = async (value, filmId) => {
     filmApi.PostRating(value, filmId, this.state.sessionId);
     await filmApi.getRatedFilms(this.state.sessionId).then((body) => this.setState({ ratedFilms: body.results }));
+    this.setState({ films: mergeArrays(this.state.ratedFilms, this.state.films) });
   };
 
   async componentDidMount() {

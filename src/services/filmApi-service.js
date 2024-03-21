@@ -47,8 +47,11 @@ export default class FilmApiService {
       `https://api.themoviedb.org/3/guest_session/${id}/rated/movies?language=en-US&page=1&sort_by=created_at.asc`,
       this.options
     );
+    if (res.status === 404) {
+      console.log('no film in rated');
+    }
     if (!res.ok) {
-      throw new Error(`Could not fetch ${id}, received ${res.status}`);
+      throw new Error('no film in rated');
     }
 
     const films = await res.json();
