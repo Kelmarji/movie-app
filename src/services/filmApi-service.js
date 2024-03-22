@@ -42,13 +42,13 @@ export default class FilmApiService {
 
   // rated films
   async getRatedFilms(id) {
-    console.log(id);
     const res = await fetch(
       `https://api.themoviedb.org/3/guest_session/${id}/rated/movies?language=en-US&page=1&sort_by=created_at.asc&api_key=${this.apiKey}`,
       this.options
     );
     if (!res.ok) {
-      console.log('no film in rated');
+      // oshibka iz-za konchenogo API ))0), po etomy podojdem poka ok (p.s. iktdw);
+      await res.ok;
     }
 
     const films = await res.json();
