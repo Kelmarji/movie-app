@@ -20,6 +20,12 @@
   width: 938px;
 }
 
+@media (max-width: 768px) {
+  .input-size {
+    width: 90vw;
+  }
+}
+
 .loading__card {
   justify-content: center;
   align-items: center;

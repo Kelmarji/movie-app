@@ -8,7 +8,6 @@ export default class FilmApiService {
     },
   };
 
-  //  заготовка PostRating
   // eslint-disable-next-line class-methods-use-this
   async PostRating(value, filmId, sesId = '0959599ec631455f4858556b58c95a2d') {
     const postOptions = {
@@ -51,7 +50,7 @@ export default class FilmApiService {
       console.log('no film in rated');
     }
     if (!res.ok) {
-      throw new Error('no film in rated');
+      console.log('no film in rated');
     }
 
     const films = await res.json();

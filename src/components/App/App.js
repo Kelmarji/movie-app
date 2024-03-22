@@ -10,7 +10,7 @@ import MovieList from '../MovieList';
 
 const filmApi = new FilmApiService();
 
-const mergeArrays = (arr1, arr2) => {
+const mergeArrays = (arr1 = [], arr2 = []) => {
   const mergedArray = [...arr1];
 
   arr2.forEach((obj2) => {
@@ -134,6 +134,7 @@ export default class App extends Component {
   changeTab = async (str) => {
     if (str === 'Search') {
       this.setState({ tab: 'Search' });
+      this.setState({ films: mergeArrays(this.state.films, this.state.ratedFilms) });
     } else {
       await filmApi.getRatedFilms(this.state.sessionId).then((body) => this.setState({ ratedFilms: body.results }));
       this.setState({ tab: 'Rated' });

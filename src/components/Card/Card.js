@@ -19,7 +19,7 @@ const Card = (props) => {
     return 0;
   };
   // eslint-disable-next-line no-nested-ternary
-  const color = popularity > 70 ? '#66E900' : popularity > 50 ? '#E9D100' : popularity > 30 ? '#E97E00' : '#E90000';
+  const color = popularity > 7 ? '#66E900' : popularity > 5 ? '#E9D100' : popularity > 3 ? '#E97E00' : '#E90000';
 
   if (typeof genres[0] === 'object') {
     for (const item of genres) {
@@ -33,16 +33,16 @@ const Card = (props) => {
   return (
     <li key={id} id={id} className="movie__card">
       <div className="card__image">
-        <img className="cardImg" src={`https://image.tmdb.org/t/p/w185${poster}`} alt={label} />
+        <img className="card__image" src={`https://image.tmdb.org/t/p/w185${poster}`} alt={label} />
       </div>
       <div className="card__info">
         <div className="card__title">
           <h1 className="card__name">{label}</h1>
           <a.Progress
             type="circle"
-            percent={popularity}
+            percent={popularity * 10}
             strokeColor={color}
-            size={'small'}
+            size={40}
             format={(percent) => (percent < 100 ? `${(percent / 10).toFixed(1)}` : 10)}
           />
         </div>
@@ -68,6 +68,7 @@ const Card = (props) => {
           <a.Rate
             value={countStars(rating)}
             id={id}
+            className="CardRate"
             allowHalf
             defaultValue={0}
             onChange={(value) => {
@@ -77,6 +78,8 @@ const Card = (props) => {
         ) : (
           <a.Rate
             id={id}
+            className="CardRate"
+            count={10}
             allowHalf
             defaultValue={0}
             onChange={(value) => {

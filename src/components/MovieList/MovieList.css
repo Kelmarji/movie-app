@@ -11,7 +11,8 @@
 
 @media (max-width: 768px) {
     .movie__list {
+      width: 90vw;
       grid-template-columns: 1fr;
-      gap: 1vw;
+      gap: 1vh;
     }
   }
