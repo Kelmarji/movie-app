@@ -17,7 +17,13 @@
     max-width: 183px;
     max-height: 281px;
     margin-right: 5px;
+}
 
+.card__image img {
+    min-height: 281px;
+    min-width: 183px;
+    max-width: 183px;
+    max-height: 281px;
 }
 
 .card__name {
@@ -32,7 +38,10 @@
 
 .card__time {
     color: #827E7E;
+}
 
+ul .card__theme {
+    margin-top: 10px;
 }
 
 .card__theme {
@@ -45,15 +54,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: start;
-    width:80%;
-    gap: 10px
+    gap: 7px
 }
 
 .card__theme li {
     font-size: small;
     border: 1px solid rgba(158, 158, 158, 0.623);
     border-radius: 5px;
-    padding: 2px 4px 4px 4px;
+    padding: 0px 4px 4px 4px;
     height: 14px;
     text-align: center;
 }
@@ -70,7 +78,6 @@
     max-width: 271px;
     max-height: 281px;
     overflow: hidden;
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 15px;
     line-height: 22px;
     text-align: left;    
@@ -86,15 +93,70 @@
     font-size: 1rem;
 }
 
+.circle_rate {
+    margin: 0px 10px;
+}
+
 @media (max-width: 768px) {
     .movie__card {
-      max-width: 90vw;
-      margin: 10px;
-      height: auto;
-      display: flex;
+        position: relative;
+        display: flex;
     }
+    
+    .card__info {
+        justify-content: flex-start;
+    }
+    
     .card__image {
-
+        min-height: 91px;
+        min-width: 60px;
+        max-width: 60px;
+        max-height: 91px;
     }
-  }
+
+    .picture {
+        min-height: 91px;
+        min-width: 60px;
+        max-width: 60px;
+        max-height: 91px;
+        margin: 10px;
+    }
+
+    li .movie__card {
+        max-height: 245px;
+        max-width: 388px;
+        min-height: 245px;
+        min-width: 388px;
+    }
+
+    .card__header--mobile {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card__time {
+        margin-bottom: 10px;
+    }
+
+    .movie__info {
+        position: absolute;
+        top: 50%;
+        left: 2%;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .CardRate {
+        position: absolute;
+        right: 2%;
+        bottom: 10%;
+    }
+
+    .circle_rate {
+        position: absolute;
+        right: 2%;
+        top: 5%;
+    }
+}
 

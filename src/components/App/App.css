@@ -1,15 +1,10 @@
 .App {
   margin: 1vh 1vw;
-  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   background-color: white;
-}
-
-.margined {
-  padding: 0px 200px;
 }
 
 .ant-pagination-item-link {
@@ -51,7 +46,7 @@
 }
 
 .Footer {
-  margin-bottom: 1vh;
+  margin-bottom: 2vh;
 }
 
 .Header {

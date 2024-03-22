@@ -5,7 +5,6 @@ import * as a from 'antd';
 import Card from '../Card';
 
 const MovieList = ({ filmsList = [], tab, ratingPost }) => {
-  console.log(filmsList, filmsList.length);
   if (filmsList.length > 0) {
     const filteredFilms = filmsList.filter((el) => {
       return (
@@ -14,7 +13,6 @@ const MovieList = ({ filmsList = [], tab, ratingPost }) => {
         (tab === 'Search' ? el.genres : el.genre_ids) &&
         el.overview &&
         el.release_date &&
-        el.poster_path &&
         el.popularity
       );
     });
@@ -39,7 +37,15 @@ const MovieList = ({ filmsList = [], tab, ratingPost }) => {
       </ul>
     );
   }
-  return <a.Alert message="Warning" description={'Ops, you don added films in rated list'} type="warning" showIcon />;
+  return (
+    <a.Alert
+      className="noMovies"
+      message="Warning"
+      description={'Ops, you don added films in rated list'}
+      type="warning"
+      showIcon
+    />
+  );
 };
 
 export default MovieList;

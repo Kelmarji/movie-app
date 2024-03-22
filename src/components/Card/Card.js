@@ -6,7 +6,9 @@ import * as a from 'antd';
 
 import { MovieAppConsumer } from '../MovieAppContextService/MovieAppContextService';
 
-const descLength = (text) => `${text.split(' ').slice(0, 30).join(' ')} ${'...'}`;
+import noPoster from './noPoster.png';
+
+const descLength = (text) => (text.length > 150 ? `${text.split(' ').slice(0, 30).join(' ')} ${'...'}` : text);
 
 const Card = (props) => {
   const { label, genres, desc, date, id, poster, popularity, ratingPost, rating } = props;
@@ -32,61 +34,67 @@ const Card = (props) => {
 
   return (
     <li key={id} id={id} className="movie__card">
-      <div className="card__image">
-        <img className="card__image" src={`https://image.tmdb.org/t/p/w185${poster}`} alt={label} />
+      <div className="picture">
+        <img className="card__image" src={poster ? `https://image.tmdb.org/t/p/w185${poster}` : noPoster} alt={label} />
       </div>
       <div className="card__info">
-        <div className="card__title">
-          <h1 className="card__name">{label}</h1>
-          <a.Progress
-            type="circle"
-            percent={popularity * 10}
-            strokeColor={color}
-            size={40}
-            format={(percent) => (percent < 100 ? `${(percent / 10).toFixed(1)}` : 10)}
-          />
+        <div className="card__header--mobile">
+          <div className="card__title">
+            <h1 className="card__name">{label}</h1>
+            <a.Progress
+              className="circle_rate"
+              type="circle"
+              percent={popularity * 10}
+              strokeColor={color}
+              size={40}
+              format={(percent) => (percent < 100 ? `${(percent / 10).toFixed(1)}` : 10)}
+            />
+          </div>
+          <span className="card__time">{`${format(new Date(date), 'MMMM dd, yyyy')}`}</span>
+          <ul className="card__theme">
+            {genresToSpan.map((item) => {
+              return (
+                <MovieAppConsumer key={item}>
+                  {(genr) => {
+                    const genreName = genr.find((genre) => genre.id === item);
+                    return (
+                      <li key={item} className="marked">
+                        <span>{genreName ? genreName.name : ''}</span>
+                      </li>
+                    );
+                  }}
+                </MovieAppConsumer>
+              );
+            })}
+          </ul>
         </div>
-        <span className="card__time">{`${format(new Date(date), 'MMMM dd, yyyy')}`}</span>
-        <ul className="card__theme">
-          {genresToSpan.map((item) => {
-            return (
-              <MovieAppConsumer key={item}>
-                {(genr) => {
-                  const genreName = genr.find((genre) => genre.id === item);
-                  return (
-                    <li key={item} className="marked">
-                      <span>{genreName ? genreName.name : ''}</span>
-                    </li>
-                  );
-                }}
-              </MovieAppConsumer>
-            );
-          })}
-        </ul>
-        <span className="movie__info">{descLength(desc)}</span>
-        {rating ? (
-          <a.Rate
-            value={countStars(rating)}
-            id={id}
-            className="CardRate"
-            allowHalf
-            defaultValue={0}
-            onChange={(value) => {
-              ratingPost(value, id);
-            }}
-          />
-        ) : (
-          <a.Rate
-            id={id}
-            className="CardRate"
-            count={10}
-            allowHalf
-            defaultValue={0}
-            onChange={(value) => {
-              ratingPost(value, id);
-            }}
-          />
-        )}
+        <div className="card__footeer--mobile">
+          <span className="movie__info">{descLength(desc)}</span>
+          {rating ? (
+            <a.Rate
+              value={countStars(rating)}
+              id={id}
+              count={10}
+              className="CardRate"
+              allowHalf
+              defaultValue={0}
+              onChange={(value) => {
+                ratingPost(value, id);
+              }}
+            />
+          ) : (
+            <a.Rate
+              id={id}
+              className="CardRate"
+              count={10}
+              allowHalf
+              defaultValue={0}
+              onChange={(value) => {
+                ratingPost(value, id);
+              }}
+            />
+          )}
+        </div>
       </div>
     </li>
   );
