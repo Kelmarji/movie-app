@@ -1,10 +1,12 @@
 export default class FilmApiService {
+  apiKey =
+    'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYTk4YmNiZGM5NTY4ZDFjMmJlNDVmMGUxZmZiMDRhNyIsInN1YiI6IjY1ZTVkMGI3YTA1NWVmMDE2MzEyMDczZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7nvhnCAfqpCaeEsxc3Xfs3hJ42uWhnprRZK_VxeeAH4';
+
   options = {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYTk4YmNiZGM5NTY4ZDFjMmJlNDVmMGUxZmZiMDRhNyIsInN1YiI6IjY1ZTVkMGI3YTA1NWVmMDE2MzEyMDczZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7nvhnCAfqpCaeEsxc3Xfs3hJ42uWhnprRZK_VxeeAH4',
+      Authorization: `Bearer ${this.apiKey}`,
     },
   };
 
@@ -15,16 +17,14 @@ export default class FilmApiService {
       headers: {
         accept: 'application/json',
         'Content-Type': 'application/json;charset=utf-8',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYTk4YmNiZGM5NTY4ZDFjMmJlNDVmMGUxZmZiMDRhNyIsInN1YiI6IjY1ZTVkMGI3YTA1NWVmMDE2MzEyMDczZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7nvhnCAfqpCaeEsxc3Xfs3hJ42uWhnprRZK_VxeeAH4',
+        Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({ value }),
     };
 
     fetch(`https://api.themoviedb.org/3/movie/${filmId}/rating?guest_session_id=${sesId}`, postOptions)
       .then((response) => response.json())
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err));
+      .catch((err) => err.message);
   }
 
   apiBase = 'https://api.themoviedb.org/3';
@@ -42,13 +42,11 @@ export default class FilmApiService {
 
   // rated films
   async getRatedFilms(id) {
+    console.log(id);
     const res = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${id}/rated/movies?language=en-US&page=1&sort_by=created_at.asc`,
+      `https://api.themoviedb.org/3/guest_session/${id}/rated/movies?language=en-US&page=1&sort_by=created_at.asc&api_key=${this.apiKey}`,
       this.options
     );
-    if (res.status === 404) {
-      console.log('no film in rated');
-    }
     if (!res.ok) {
       console.log('no film in rated');
     }

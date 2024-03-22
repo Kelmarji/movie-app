@@ -144,20 +144,30 @@ export default class App extends Component {
     }
   };
 
-  rater = async (value, filmId) => {
+  rater = async (value = 0, filmId = 1198870) => {
     this.getFilms();
     filmApi.PostRating(value, filmId, this.state.sessionId);
     await filmApi.getRatedFilms(this.state.sessionId).then(async (body) => {
       const newStateFilms = await body;
-      console.log(newStateFilms.results, this.state.films);
-      this.setState({ films: mergeArrays(newStateFilms.results, this.state.films) });
+      this.setState({ films: mergeArrays(this.state.films, newStateFilms.results) });
     });
   };
 
   async componentDidMount() {
     this.createGuestSes();
     this.getGenres();
+    this.rater(1, 1198870);
     this.getFilms(this.state.page, this.state.search);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.films !== nextState.films;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.films !== this.state.films || prevState.ratedFilms !== this.state.ratedFilms) {
+      mergeArrays(this.state.ratedFilms, this.state.films);
+    }
   }
 
   componentDidCatch(err) {
@@ -189,15 +199,17 @@ export default class App extends Component {
               >
                 <antd.Tabs defaultActiveKey="1" items={this.items} onChange={(e) => this.changeTab(e)} />
               </antd.ConfigProvider>
-              <antd.Input
-                placeholder="type to search..."
-                className="input-size"
-                onChange={(e) => {
-                  this.changeSearch(e.target.value);
-                  this.pageSetter(1);
-                }}
-                size={'Large'}
-              />
+              {tab === 'Search' ? (
+                <antd.Input
+                  placeholder="type to search..."
+                  className="input-size"
+                  onChange={(e) => {
+                    this.changeSearch(e.target.value);
+                    this.pageSetter(1);
+                  }}
+                  size={'Large'}
+                />
+              ) : null}
             </div>
             <MovieAppProvider value={this.state.genres}>
               {loaded ? (
@@ -246,7 +258,13 @@ export default class App extends Component {
                 size={'Large'}
               />
             </div>
-            <antd.Alert message="Error" description={'Ops, lost connection...'} type="error" showIcon />
+            <antd.Alert
+              className="noMovies"
+              message="Error"
+              description={'Ops, lost connection...'}
+              type="error"
+              showIcon
+            />
             <antd.Pagination current={page} className="Footer" total={1} onChange={(e) => this.changePage(e)} />
           </div>
         </Offline>

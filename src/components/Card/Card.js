@@ -9,6 +9,7 @@ import { MovieAppConsumer } from '../MovieAppContextService/MovieAppContextServi
 import noPoster from './noPoster.png';
 
 const descLength = (text) => (text.length > 150 ? `${text.split(' ').slice(0, 30).join(' ')} ${'...'}` : text);
+const namerLength = (text) => (text.split(' ').length > 6 ? `${text.split(' ').slice(0, 6).join(' ')}${'...'}` : text);
 
 const Card = (props) => {
   const { label, genres, desc, date, id, poster, popularity, ratingPost, rating } = props;
@@ -40,7 +41,9 @@ const Card = (props) => {
       <div className="card__info">
         <div className="card__header--mobile">
           <div className="card__title">
-            <h1 className="card__name">{label}</h1>
+            <h1 title={label} className="card__name">
+              {namerLength(label)}
+            </h1>
             <a.Progress
               className="circle_rate"
               type="circle"
