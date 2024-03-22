@@ -1,28 +1,50 @@
 import React from 'react';
 import './MovieList.css';
+import * as a from 'antd';
 
 import Card from '../Card';
 
-const MovieList = ({ filmsList }) => {
-  const filteredFilms = filmsList
-    .filter((el) => {
-      return el.id && el.title && el.genres && el.overview && el.release_date && el.poster_path;
-    })
-    .slice(0, 6);
-  const filmArr = filteredFilms.map((item) => (
-    <Card
-      key={item.id}
-      label={item.title}
-      genres={item.genres}
-      desc={item.overview}
-      date={item.release_date}
-      poster={item.poster_path}
-    />
-  ));
+const MovieList = ({ filmsList = [], tab, ratingPost }) => {
+  if (filmsList.length > 0) {
+    const filteredFilms = filmsList.filter((el) => {
+      return (
+        el.id &&
+        el.title &&
+        (tab === 'Search' ? el.genres : el.genre_ids) &&
+        el.overview &&
+        el.release_date &&
+        el.popularity
+      );
+    });
+
+    const filmArr = filteredFilms.map((item) => (
+      <Card
+        rating={item.rating}
+        ratingPost={ratingPost}
+        id={item.id}
+        key={item.id}
+        label={item.title}
+        genres={tab === 'Search' ? item.genres : item.genre_ids}
+        desc={item.overview}
+        date={item.release_date}
+        poster={item.poster_path}
+        popularity={item.vote_average}
+      />
+    ));
+    return (
+      <ul key="uniqueKey" className="movie__list">
+        {filmArr}
+      </ul>
+    );
+  }
   return (
-    <ul key="uniqueKey" className="movie__list">
-      {filmArr}
-    </ul>
+    <a.Alert
+      className="noMovies"
+      message="Warning"
+      description={'Ops, you don added films in rated list'}
+      type="warning"
+      showIcon
+    />
   );
 };
 

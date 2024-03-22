@@ -1,14 +1,10 @@
 .App {
-  padding: 0;
+  margin: 1vh 1vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px 50px;
+  justify-content: space-between;
   background-color: white;
-}
-
-.margined {
-  padding: 0px 200px;
 }
 
 .ant-pagination-item-link {
@@ -19,22 +15,42 @@
   width: 938px;
 }
 
+@media (max-width: 768px) {
+  .input-size {
+    width: 90vw;
+  }
+}
+
 .loading__card {
   justify-content: center;
   align-items: center;
   padding: 0px;
   padding-right: 5px;
   margin: 0px;
-  font-family:Inter UI;
+  font-family: Inter UI;
   display: flex;
 }
 
 .unloaded__movie__list {
-    display: flex !important;
-    width: 100vw;
-    height: 80vh;
-    justify-content: space-around;
-    padding: 0;
-    align-items: center;
-    display: flex;
+  display: flex !important;
+  width: 100vw;
+  height: 80vh;
+  justify-content: space-around;
+  padding: 0;
+  align-items: center;
+  display: flex;
+}
+
+.offline__alert {
+  margin: 90vh 90vw;
+}
+
+.Footer {
+  margin-bottom: 2vh;
+}
+
+.Header {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
 }
